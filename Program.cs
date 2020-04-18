@@ -11,6 +11,7 @@ namespace Karata
         {
             Console.WriteLine($"Karata v{VERSION}\n");
             do {
+                // TODO Pass a Rules object to Game constructor... possibly Dictionary<Rule, bool>
                 Game game = new Game();
                 game.Play();
             } while (RunAgain());
@@ -21,7 +22,9 @@ namespace Karata
             Console.Write($"{(error? "\nError! Invalid input. ": "")}Run again? (Y/N) ");
             ConsoleKeyInfo input = Console.ReadKey(true);
             Console.WriteLine($"{input.KeyChar}\n");
-            return Array.Exists(new[] {ConsoleKey.Y, ConsoleKey.N}, x => x == input.Key)? input.Key == ConsoleKey.Y: RunAgain(true);
+            return (input.Key == ConsoleKey.Y || input.Key == ConsoleKey.N)
+                ? input.Key == ConsoleKey.Y 
+                : RunAgain(true);
         }
     }
 }
