@@ -9,6 +9,7 @@ namespace Karata.Models
         public List<Card> Cards { get; set; }
         public bool LastCard { get; set; }
 
+        public void GiveCards(List<Card> cards);
         public List<Card> DoTurn(GameState gameState);
     }
 }
