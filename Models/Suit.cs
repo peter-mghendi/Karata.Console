@@ -23,11 +23,7 @@ namespace Karata.Models
             Any = Black | Red
         }
 
-        public static readonly Suits 
-            BlackSuits = Suits.Spades | Suits.Clubs, 
-            RedSuits = Suits.Hearts | Suits.Diamonds,
-            AnySuit = BlackSuits | RedSuits;
-
+        public static readonly Suits[] specialSuits = {Suits.Black, Suits.Red, Suits.Any};
 
         public Suits SuitName { get; set; }
 

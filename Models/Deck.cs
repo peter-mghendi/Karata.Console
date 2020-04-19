@@ -7,17 +7,14 @@ namespace Karata.Models
     class Deck
     {
         public Deck(bool shuffle = false) {
+            // TODO Get rid of magic constants
             Stack<Card> cardDeck = new Stack<Card>(54);
             var suitValues = Enum.GetValues(typeof(Suit.Suits)).Cast<Suit.Suits>();
-            var faceValues = Enum.GetValues(typeof(Card.FaceValues)).Cast<Card.FaceValues>();
-            foreach (var suit in suitValues) {
-                if (suit >= Suit.Suits.Black) continue; 
-                foreach (var face in faceValues) {
-                    if (face >= Card.FaceValues.Joker) 
-                        continue;
-
+            var faceValues = Enum.GetValues(typeof(Card.FaceValues)).Cast<Card.FaceValues>().Take(13);
+            foreach (Suit.Suits suit in suitValues) {
+                if (Array.Exists(Suit.specialSuits, x => x == suit)) continue;
+                foreach (Card.FaceValues face in faceValues) 
                     cardDeck.Push(new Card(face, suit));
-                }
             }
 
             cardDeck.Push(new Card(Card.FaceValues.Joker, Suit.Suits.Black));

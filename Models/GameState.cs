@@ -3,7 +3,9 @@ namespace Karata.Models
 {
     class GameState
     {
-        public GameState() {
+        public GameState() 
+        {
+            // TODO Get rid of magic constants
             Pile = new Stack<Card>(54);
             RequestCard = Card.AnyCard;
         }

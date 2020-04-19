@@ -13,6 +13,7 @@ namespace Karata.App
             Players = players;
             GameState = new GameState();
             Deck = new Deck(shuffle: true);
+            // TODO Get rid of magic constants
             Deal(4);
         }
 
@@ -23,6 +24,7 @@ namespace Karata.App
         public void Play()
         {
             Console.WriteLine("Game starts in 3 seconds...");
+            // TODO Get rid of magic constants
             List<Card> tempList = new List<Card>(53);
             do {
                 if (!Array.Exists(Card.specialFaces, x => x == Deck.Cards.Peek().FaceValue)) {
@@ -32,9 +34,11 @@ namespace Karata.App
 
                 tempList.Add(Deck.Cards.Pop());
             } while (Deck.Size > 0);
+
             tempList.AddRange(Deck.Cards);
             Deck.Cards = new Stack<Card>(tempList);
             
+            // TODO Get rid of magic constants
             Thread.Sleep(3000);
             Console.Clear();
 
@@ -50,6 +54,7 @@ namespace Karata.App
                     else 
                     {
                         // This block takes care of prompting the player for an action
+                        Console.WriteLine($"Deck Size: {Deck.Size}");
                         Console.WriteLine($"Current top card: {GameState.TopCard.ToString()}");
                         Console.WriteLine($"{player.Name}'s turn.\nYour Cards: \n");
                         IEnumerable<string> playerCards = player.Cards.Select((card, i) => $"{i}: {card.ToString()}");
