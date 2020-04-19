@@ -12,6 +12,7 @@ namespace Karata.Models
             Red
         }
 
+        // TODO Function to automatically assign these
         public enum Suits
         {
             Spades = 1,

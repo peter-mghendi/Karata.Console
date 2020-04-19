@@ -3,6 +3,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System;
 using Karata.Models;
+using Karata.Exceptions;
 
 namespace Karata.App
 {
@@ -66,24 +67,28 @@ namespace Karata.App
                         // This block takes care of displaying the results of the player's turn
                         if(turn.Count == 0) 
                         {
-                            player.GiveCards(Deck.Pick());
+                            player.GiveCards(PickFromDeck());
                             Console.WriteLine($"{player.Name} picked a card.\n");
                         } 
                         
                         Console.WriteLine(String.Join('\n', turn.Select(x => $"{player.Name} played {x.ToString()}")));
                         
-
-                        if (player.LastCard) {
+                        // TODO Get rid of the nested ifs
+                        if (player.LastCard) 
+                        {
                             if (!player.LastCardSignalledThisTurn) 
                             {
                                 if (player.Cards.Count == 0) 
                                 {
-                                    Console.WriteLine($"Game Over! {player.Name} wins!\n");
-                                    return;
+                                    if (Players.Any(x => x.Cards.Count == 0)) 
+                                    {
+                                        Console.WriteLine($"Game Over! {player.Name} wins!\n");
+                                        return;
+                                    }
+                                    Console.WriteLine("Game cannot end because some players do not have cards");
                                 }
                                 player.LastCard = false;
-                            }
-                            Console.WriteLine($"{player.Name} is on their last card(s)\n");
+                            } else Console.WriteLine($"{player.Name} is on their last card(s)\n");
                         }
                     }
 
@@ -95,6 +100,30 @@ namespace Karata.App
             } while(true);
         }
 
-        private void Deal(uint num) => Players.ForEach(player => player.GiveCards(Deck.Pick(num)));
+        private void Deal(uint num) => Players.ForEach(player => player.GiveCards(PickFromDeck(num)));
+
+        private List<Card> PickFromDeck(uint num = 1, uint attempts = 0) {
+            // TODO Get rid of magic constants
+            if (attempts > 5) throw new AttemptsExceededException($"Unable to pick {num} cards from deck.");
+
+            try 
+            {
+                return Deck.Pick(num);
+            } 
+            catch (InsufficientCardsException) 
+            {
+                Console.WriteLine("Please wait, shuffling...");
+                Thread.Sleep(3000);
+                
+                var temp = GameState.Pile;
+                GameState.Pile = new Stack<Card>(54);
+                GameState.Pile.Push(temp.Pop());
+
+                temp.ToList().AddRange(Deck.Cards);
+                Deck.Cards = new Stack<Card>(temp);
+                Deck.Shuffle();
+                return PickFromDeck(num, ++attempts);
+            }
+        }
     }
 }

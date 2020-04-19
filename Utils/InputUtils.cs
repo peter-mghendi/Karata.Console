@@ -62,6 +62,7 @@ namespace Karata.Utils
             if (uint.TryParse(input, out uint temp) && temp <= max)
                 return ReadPlayString(prompt, errorPrompt, max, endChars, playString, false);
 
+            playString.RemoveAt(playString.Count - 1);
             return ReadPlayString(prompt, errorPrompt, max, endChars, playString, true);
         }
     }

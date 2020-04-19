@@ -1,12 +1,14 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Karata.Exceptions;
 
 namespace Karata.Models
 {
     class Deck
     {
         public Deck(bool shuffle = false) {
+            // Push standard cards into deck
             // TODO Get rid of magic constants
             Stack<Card> cardDeck = new Stack<Card>(54);
             var suitValues = Enum.GetValues(typeof(Suit.Suits)).Cast<Suit.Suits>();
@@ -34,8 +36,7 @@ namespace Karata.Models
         public void Shuffle() => Cards = new Stack<Card>(Cards.OrderBy(_ => random.Next()));
 
         public List<Card> Pick(uint num = 1) {
-            // TODO Custom Exceptions
-            if(num > Size) throw new Exception("Too few cards in deck");
+            if(num > Size) throw new InsufficientCardsException("Too few cards in deck");
 
             List<Card> picked = new List<Card>();
             for(int i = 0; i < num; i++) 
