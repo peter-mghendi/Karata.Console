@@ -18,7 +18,16 @@ namespace Karata.Models
             Hearts = 2,
             Clubs = 4,
             Diamonds = 8,
+            Black = Spades | Clubs, 
+            Red = Hearts | Diamonds,
+            Any = Black | Red
         }
+
+        public static readonly Suits 
+            BlackSuits = Suits.Spades | Suits.Clubs, 
+            RedSuits = Suits.Hearts | Suits.Diamonds,
+            AnySuit = BlackSuits | RedSuits;
+
 
         public Suits SuitName { get; set; }
 

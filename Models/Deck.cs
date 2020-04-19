@@ -10,16 +10,18 @@ namespace Karata.Models
             Stack<Card> cardDeck = new Stack<Card>(54);
             var suitValues = Enum.GetValues(typeof(Suit.Suits)).Cast<Suit.Suits>();
             var faceValues = Enum.GetValues(typeof(Card.FaceValues)).Cast<Card.FaceValues>();
-            foreach (var suit in suitValues)
+            foreach (var suit in suitValues) {
+                if (suit >= Suit.Suits.Black) continue; 
                 foreach (var face in faceValues) {
-                    if (face == Card.FaceValues.Joker) 
+                    if (face >= Card.FaceValues.Joker) 
                         continue;
 
                     cardDeck.Push(new Card(face, suit));
                 }
+            }
 
-            cardDeck.Push(new Card(Card.FaceValues.Joker, Suit.Suits.Spades | Suit.Suits.Clubs));
-            cardDeck.Push(new Card(Card.FaceValues.Joker, Suit.Suits.Hearts | Suit.Suits.Diamonds));       
+            cardDeck.Push(new Card(Card.FaceValues.Joker, Suit.Suits.Black));
+            cardDeck.Push(new Card(Card.FaceValues.Joker, Suit.Suits.Red));       
 
             Cards = cardDeck;   
             if(shuffle) Shuffle();     
