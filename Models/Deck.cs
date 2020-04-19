@@ -7,7 +7,7 @@ namespace Karata.Models
     class Deck
     {
         public Deck(bool shuffle = false) {
-            Stack<Card> cardDeck = new Stack<Card>();
+            Stack<Card> cardDeck = new Stack<Card>(54);
             var suitValues = Enum.GetValues(typeof(Suit.Suits)).Cast<Suit.Suits>();
             var faceValues = Enum.GetValues(typeof(Card.FaceValues)).Cast<Card.FaceValues>();
             foreach (var suit in suitValues)
@@ -32,7 +32,7 @@ namespace Karata.Models
 
         // TODO Better shuffle algorithm
         // REF Fisher-Yates Algorithm/Knuth Shuffle
-        public void Shuffle() => Cards.OrderBy(x => random.Next());
+        public void Shuffle() => Cards = new Stack<Card>(Cards.OrderBy(_ => random.Next()));
 
         public List<Card> Pick(uint num = 1) {
             // TODO Custom Exceptions
