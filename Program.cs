@@ -3,8 +3,8 @@ using System;
 using Karata.App;
 using Karata.Models;
 using Karata.Utils;
+using Karata.Engine.Models;
 using Karata.Exceptions;
-
 namespace Karata
 {
     class Program

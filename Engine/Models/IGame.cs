@@ -1,4 +1,4 @@
-namespace Karata.App
+namespace Karata.Engine.Models
 {
     interface IGame
     {

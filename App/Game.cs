@@ -3,6 +3,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System;
 using Karata.Models;
+using Karata.Engine.Models;
 using Karata.Exceptions;
 
 namespace Karata.App
@@ -12,13 +13,11 @@ namespace Karata.App
         public Game(List<IPlayer> players) 
         {
             Players = players;
-            GameState = new GameState();
-            Deck = new Deck(shuffle: true);
+            GameState = new GameState(shuffleDeck: true);
             // TODO Get rid of magic constants
             Deal(4);
         }
 
-        private Deck Deck { get; set; }
         private GameState GameState { get; set; }
         private List<IPlayer> Players { get; set; }
 
@@ -26,18 +25,18 @@ namespace Karata.App
         {
             Console.WriteLine("Game starts in 3 seconds...");
             // TODO Get rid of magic constants
-            List<Card> tempList = new List<Card>(53);
+            List<ICard> tempList = new List<ICard>(53);
             do {
-                if (!Array.Exists(Card.specialFaces, x => x == Deck.Cards.Peek().FaceValue)) {
-                    GameState.Pile.Push(Deck.Cards.Pop());
+                if (!Array.Exists(Card.specialFaces, x => x == GameState.Deck.Cards.Peek().FaceValue)) {
+                    GameState.Pile.Push(GameState.Deck.Cards.Pop());
                     break;
                 }
 
-                tempList.Add(Deck.Cards.Pop());
-            } while (Deck.Size > 0);
+                tempList.Add(GameState.Deck.Cards.Pop());
+            } while (GameState.Deck.Size > 0);
 
-            tempList.AddRange(Deck.Cards);
-            Deck.Cards = new Stack<Card>(tempList);
+            tempList.AddRange(GameState.Deck.Cards);
+            GameState.Deck.Cards = new Stack<ICard>(tempList);
             
             // TODO Get rid of magic constants
             Thread.Sleep(3000);
@@ -49,18 +48,18 @@ namespace Karata.App
                 {
                     if(player.Cards.Count == 0) 
                     {
-                        player.GiveCards(Deck.Pick());
+                        player.GiveCards(GameState.Deck.Pick());
                         Console.WriteLine($"{player.Name} picked a card.\n");
                     } 
                     else 
                     {
                         // This block takes care of prompting the player for an action
-                        Console.WriteLine($"Deck Size: {Deck.Size}");
+                        Console.WriteLine($"Deck Size: {GameState.Deck.Size}");
                         Console.WriteLine($"Current top card: {GameState.TopCard.ToString()}");
                         Console.WriteLine($"{player.Name}'s turn.\nYour Cards: \n");
                         IEnumerable<string> playerCards = player.Cards.Select((card, i) => $"{i}: {card.ToString()}");
                         Console.WriteLine(String.Join('\n', playerCards));
-                        List<Card> turn = player.DoTurn(GameState);
+                        List<ICard> turn = player.DoTurn(GameState);
                         turn.ForEach(x => GameState.Pile.Push(x));
                         Console.Clear();
 
@@ -80,7 +79,7 @@ namespace Karata.App
                             {
                                 if (player.Cards.Count == 0) 
                                 {
-                                    if (Players.Any(x => x.Cards.Count == 0)) 
+                                    if (Players.Any(x => x.Cards.Count > 1)) 
                                     {
                                         Console.WriteLine($"Game Over! {player.Name} wins!\n");
                                         return;
@@ -102,13 +101,13 @@ namespace Karata.App
 
         private void Deal(uint num) => Players.ForEach(player => player.GiveCards(PickFromDeck(num)));
 
-        private List<Card> PickFromDeck(uint num = 1, uint attempts = 0) {
+        private List<ICard> PickFromDeck(uint num = 1, uint attempts = 0) {
             // TODO Get rid of magic constants
             if (attempts > 5) throw new AttemptsExceededException($"Unable to pick {num} cards from deck.");
 
             try 
             {
-                return Deck.Pick(num);
+                return GameState.Deck.Pick(num);
             } 
             catch (InsufficientCardsException) 
             {
@@ -116,12 +115,12 @@ namespace Karata.App
                 Thread.Sleep(3000);
                 
                 var temp = GameState.Pile;
-                GameState.Pile = new Stack<Card>(54);
+                GameState.Pile = new Stack<ICard>(54);
                 GameState.Pile.Push(temp.Pop());
 
-                temp.ToList().AddRange(Deck.Cards);
-                Deck.Cards = new Stack<Card>(temp);
-                Deck.Shuffle();
+                temp.ToList().AddRange(GameState.Deck.Cards);
+                GameState.Deck.Cards = new Stack<ICard>(temp);
+                GameState.Deck.Shuffle();
                 return PickFromDeck(num, ++attempts);
             }
         }
