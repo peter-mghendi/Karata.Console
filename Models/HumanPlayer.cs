@@ -49,40 +49,11 @@ namespace Karata.Models
             List<int> cardIndexes = new List<int>(Cards.Count);
             choices.ForEach(x => cardIndexes.Add(int.Parse(x))); 
             turnCards.AddRange(cardIndexes.Select(x => Cards[x]));           
-            if (turnCards.Count > 0 && !ValidateTurnCards(gameState, turnCards))
+            if (turnCards.Count > 0 && !gameState.Engine.ValidateTurnCards(gameState, turnCards))
                 return DoTurn(gameState, error: true);
 
             cardIndexes.OrderByDescending(x => x).ToList().ForEach(x => Cards.RemoveAt(x));                 
             return turnCards;
-        }
-
-        private bool ValidateTurnCards(IGameState gameState, List<ICard> turnCards) {
-            // If a card has been requested, that card must start the turn.
-            if ((turnCards[0].FaceValue & gameState.RequestCard.FaceValue) == 0) return false;
-            if ((turnCards[0].SuitValue & gameState.RequestCard.SuitValue) == 0) return false;
-
-            turnCards = turnCards.Prepend(gameState.TopCard).ToList();
-
-            for (int i = 1; i < turnCards.Count; i++)
-            {
-                ICard prevCard = turnCards[i-1];
-
-                // The Joker card should allow any card on either side
-                if ((turnCards[i].FaceValue & FaceValues.Joker) > 0 ||
-                    (prevCard.FaceValue & FaceValues.Joker) > 0) 
-                    continue;
-
-                // First card should match current top card suit or value
-                if (i == 1 &&
-                    (turnCards[i].FaceValue & prevCard.FaceValue) == 0 &&
-                    (turnCards[i].SuitValue & prevCard.SuitValue) == 0)
-                    return false;
-
-                // Every subequent card should match previous card value 
-                if (i > 1 && (turnCards[i].FaceValue & prevCard.FaceValue) == 0)
-                    return false;
-            }
-            return true;
         }
     }
 }

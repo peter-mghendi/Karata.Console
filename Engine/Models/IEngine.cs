@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 namespace Karata.Engine.Models
 {
     interface IEngine
     {
-        // TODO: Engine interface
+        public bool ValidateTurnCards(IGameState gameState, List<ICard> turnCards);
     }
 }

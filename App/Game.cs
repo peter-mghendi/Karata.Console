@@ -4,17 +4,17 @@ using System.Collections.Generic;
 using System;
 using Karata.Models;
 using Karata.Engine.Models;
+using Karata.Engine;
 using Karata.Exceptions;
 
 namespace Karata.App
 {
     class Game: IGame
     {
-        public Game(List<IPlayer> players) 
+        public Game(List<IPlayer> players, IEngine engine = null) 
         {
             Players = players;
-            GameState = new GameState(shuffleDeck: true);
-            // TODO Get rid of magic constants
+            GameState = new GameState(shuffleDeck: true, engine: engine ??= new KarataEngine());
             Deal(4);
         }
 
@@ -24,7 +24,6 @@ namespace Karata.App
         public void Play()
         {
             Console.WriteLine("Game starts in 3 seconds...");
-            // TODO Get rid of magic constants
             List<ICard> tempList = new List<ICard>(53);
             do {
                 if (!Array.Exists(Card.specialFaces, x => x == GameState.Deck.Cards.Peek().FaceValue)) {
@@ -38,7 +37,6 @@ namespace Karata.App
             tempList.AddRange(GameState.Deck.Cards);
             GameState.Deck.Cards = new Stack<ICard>(tempList);
             
-            // TODO Get rid of magic constants
             Thread.Sleep(3000);
             Console.Clear();
 
@@ -91,7 +89,6 @@ namespace Karata.App
                         }
                     }
 
-                    // TODO Ignore system/special keys
                     Console.WriteLine("Press any key to continue.");
                     _ = Console.ReadKey(true);
                     Console.Clear();
@@ -102,7 +99,6 @@ namespace Karata.App
         private void Deal(uint num) => Players.ForEach(player => player.GiveCards(PickFromDeck(num)));
 
         private List<ICard> PickFromDeck(uint num = 1, uint attempts = 0) {
-            // TODO Get rid of magic constants
             if (attempts > 5) throw new AttemptsExceededException($"Unable to pick {num} cards from deck.");
 
             try 
