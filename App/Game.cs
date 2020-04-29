@@ -61,14 +61,17 @@ namespace Karata.App
                         turn.ForEach(x => GameState.Pile.Push(x));
                         Console.Clear();
 
-                        // This block takes care of displaying the results of the player's turn
-                        if(turn.Count == 0) 
-                        {
-                            player.GiveCards(PickFromDeck());
-                            Console.WriteLine($"{player.Name} picked a card.\n");
-                        } 
+                        // This block takes care of processing and displaying the results of the player's turn
+                        GameState.Engine.ProcessPostTurnActions(GameState, turn, out uint pickedCards);
+
+                        if(turn.Count == 0) ++pickedCards;
                         
-                        Console.WriteLine(String.Join('\n', turn.Select(x => $"{player.Name} played {x.ToString()}")));
+                        Console.WriteLine(String.Join('\n', turn.Select(x => $"{player.Name} played {x.ToString()}")) + "\n");
+                        
+                        if (pickedCards > 0) {
+                            player.GiveCards(PickFromDeck(pickedCards));
+                            Console.WriteLine($"{player.Name} picked {pickedCards} card(s).\n");
+                        }
                         
                         // TODO Get rid of the nested ifs
                         if (player.LastCard) 
@@ -77,7 +80,7 @@ namespace Karata.App
                             {
                                 if (player.Cards.Count == 0) 
                                 {
-                                    if (Players.Any(x => x.Cards.Count > 1)) 
+                                    if (Players.Count(x => x.Cards.Count == 0) == 1) 
                                     {
                                         Console.WriteLine($"Game Over! {player.Name} wins!\n");
                                         return;
