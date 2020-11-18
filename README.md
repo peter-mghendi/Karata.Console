@@ -1,5 +1,6 @@
-# karata
+# Karata.Console
 [WIP] The card game we all know and love.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to publish the application and runtime into a self-contained package.
