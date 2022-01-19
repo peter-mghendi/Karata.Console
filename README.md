@@ -1,3 +1,5 @@
+> If you're here, you're probably looking for [Karata.Web](https://karatagame.herokuapp.com), the modern version built on [.NET 6](https://get.dot.net/6). Unfortunately, that version is closed-source. This is only an early version that ran as a console application.
+
 # Karata.Console
 [WIP] The card game we all know and love.
 
