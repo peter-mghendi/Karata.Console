@@ -1,4 +1,4 @@
-> If you're here, you're probably looking for [Karata.Web](https://karatagame.herokuapp.com), the modern version built on [.NET 6](https://get.dot.net/6). Unfortunately, that version is closed-source. This is only an early version that ran as a console application.
+> If you're here, you're probably looking for [Karata.Web](https://karatagame.herokuapp.com), the modern version built on [.NET 6](https://get.dot.net/6). ~Unfortunately, that version is closed-source~ [Here it is](https://github.com/sixpeteunder/karata). This is only an early version that ran as a console application.
 
 # Karata.Console
 [WIP] The card game we all know and love.
@@ -19,7 +19,7 @@ A step by step series of examples that tell you how to get a development env run
 Clone the repo to your local machine:
 
 ```
-git clone https://github.com/sixpeteunder/karata
+git clone https://github.com/sixpeteunder/Karata.Console
 ```
 
 Enter the project directory:
